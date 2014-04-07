@@ -41,7 +41,24 @@ node "logstash.cc.de" {
 		]
 	}
 	include 'logstash'
+	include 'elasticsearch'
 }
 class { 'logstash': 
 	java_install	=> true,
 }
+
+ class { 'elasticsearch':
+	package_url => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.deb',
+	config                   => {
+	     'node'                 => {
+	       'name'               => 'elasticsearch001'
+	     },
+	     'index'                => {
+	       'number_of_replicas' => '0',
+	       'number_of_shards'   => '5'
+	     },
+	     'network'              => {
+	       'host'               => $::ipaddress
+	     }
+	   }
+	 }
