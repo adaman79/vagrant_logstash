@@ -60,12 +60,25 @@ node "logstash.cc.de" {
 		ensure	=> "running",
 		enable	=> "true",
 	}
+
+#	file {"/etc/logstash/central.conf":
+#                notify  => Service["logstash"],
+#                ensure  => present,
+#                mode    => 655,
+#                content => template('/vagrant/templates/central.conf.erb');
+#        }
+
+	logstash::configfile { 'central':
+	        content => template("/vagrant/templates/central.conf.erb"),
+        	order   => 10
+	}
+
 }
 class { 'logstash': 
 	java_install	=> true,
 }
 
- class { 'elasticsearch':
+class { 'elasticsearch':
 	package_url => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.deb',
 	config                   => {
 		'cluster'	=> {

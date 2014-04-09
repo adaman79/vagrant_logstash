@@ -1,0 +1,14 @@
+input {
+	redis {
+		host	=> "<%= @ipaddress_eth1 %>"
+		type	=> "redis-input"
+		data_type	=> "list"
+		key	=> "logstash"
+	}
+}
+output {
+	stdout {}
+	elasticsearch {
+		cluster => "logstash"
+	}
+}		
