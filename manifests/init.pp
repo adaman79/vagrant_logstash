@@ -42,6 +42,24 @@ node "logstash.cc.de" {
 	}
 	include 'logstash'
 	include 'elasticsearch'
+	
+	package { "redis-server":
+		ensure 	=> "installed",
+		require	=> Exec['apt-update'],
+	}
+	
+	file {"/etc/redis/redis.conf": 
+		notify	=> Service["redis-server"],
+		ensure	=> present,
+		mode	=> 655,
+		require	=> Package["redis-server"],
+		content => template('/vagrant/templates/redis.conf.erb');
+	}
+
+	service {"redis-server":
+		ensure	=> "running",
+		enable	=> "true",
+	}
 }
 class { 'logstash': 
 	java_install	=> true,
@@ -58,7 +76,7 @@ class { 'logstash':
 	       'number_of_shards'   => '5'
 	     },
 	     'network'              => {
-	       'host'               => $::ipaddress
+	       'host'               => $::ipaddress_eth1
 	     }
 	   }
 	 }
