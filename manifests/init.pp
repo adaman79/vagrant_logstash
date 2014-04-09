@@ -68,8 +68,11 @@ class { 'logstash':
  class { 'elasticsearch':
 	package_url => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.deb',
 	config                   => {
+		'cluster'	=> {
+			'name'	=> 'logstash'
+		},
 	     'node'                 => {
-	       'name'               => 'elasticsearch001'
+	       'name'               => 'logstash'
 	     },
 	     'index'                => {
 	       'number_of_replicas' => '0',
