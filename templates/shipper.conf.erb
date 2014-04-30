@@ -1,0 +1,15 @@
+input {
+	file {
+		type	=> "syslog"
+		path	=> ["/var/log/syslog", "/var/log/messages"]
+		exclude	=> ["*.gz", "logstash.log"]
+	}
+}
+output {
+	stdout {}
+	redis {
+		host => "10.0.1.65"
+		data_type => "list"
+		key	=> "logstash"
+	}
+}		

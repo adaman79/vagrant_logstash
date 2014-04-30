@@ -89,7 +89,7 @@ class logstash::params {
     'Linux': {
       $configdir = '/etc/logstash'
       $package_dir = '/opt/logstash/swdl'
-      $installpath = '/opt/logstash'
+      $installpath = '/var/lib/logstash'
     }
     'Darwin': {
       $configdir = '/Library/Application Support/Logstash'

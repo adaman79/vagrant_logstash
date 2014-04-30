@@ -33,4 +33,33 @@ Vagrant.configure("2") do |config|
 #		puppet.options = "--hiera_config /vagrant/files/hiera.yaml"
         end
   end
+
+# client
+  config.vm.define "client" do |client|
+
+	# hostname
+	client.vm.hostname = "client.cc.de"
+
+	# private network
+	client.vm.network "public_network", :bridge => "wlan0"
+#	client.vm.provider "virtualbox" do |vb|
+	client.vm.provider "client" do |client|
+		client.customize ["modifyvm", :id, "--nic2", "intnet"]
+		client.customize ["modifyvm", :id, "--memory", "1024"]
+	end
+
+	# Set the Timezone
+	config.vm.provision :shell, :inline => "echo \"Europe/Berlin\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+
+	# upgrade puppet
+	client.vm.provision :shell, :path => "upgrade-puppet.sh"
+
+	# provisioning with puppet
+        client.vm.provision "puppet" do |puppet|
+                puppet.manifests_path = "manifests"
+                puppet.manifest_file = "client.pp"
+		puppet.module_path = "modules"
+        end
+  end
+
 end
