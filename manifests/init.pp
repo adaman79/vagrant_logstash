@@ -5,25 +5,8 @@ node "logstash.cc.de" {
 
 	include 'logstash'
 	include 'elasticsearch'
+	include 'redis'	
 	
-	package { "redis-server":
-		ensure 	=> "installed",
-		require	=> Exec['apt-update'],
-	}
-	
-	file {"/etc/redis/redis.conf": 
-		notify	=> Service["redis-server"],
-		ensure	=> present,
-		mode	=> 655,
-		require	=> Package["redis-server"],
-		content => template('/vagrant/templates/redis.conf.erb');
-	}
-
-	service {"redis-server":
-		ensure	=> "running",
-		enable	=> "true",
-	}
-
 	logstash::configfile { 'central':
 	        content => template("/vagrant/templates/central.conf.erb"),
         	order   => 10
@@ -54,4 +37,4 @@ class { 'elasticsearch':
 	       'host'               => $::ipaddress_eth1
 	     }
 	   }
-	}
+}
